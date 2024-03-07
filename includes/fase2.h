@@ -1,6 +1,7 @@
 #ifndef FASE_2_H
 #define FASE_2_H
 
-void jogo_fase2();
+    void fase2_init();
+    void draw_fase2();
 
 #endif

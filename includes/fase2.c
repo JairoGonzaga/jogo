@@ -3,160 +3,162 @@
 #include "structs.h"
 #include "fase1.h"
 #include "defs.h"
-#include "colisao.c"
+#include "colisao.h"
+#ifndef FASE2_C
+#define FASE2_C
 
-void jogo_fase2()
+Texture2D backtext2;
+
+int largura_background;
+int altura_background;
+fase fase2;
+
+void fase2_init()
 {
-    Bola bola = {.x = 0,
-                 .y = 100,
-                 .size = 10.0,
-                 .velocidadeY = 0,
-                 .noChao = 0};
 
-    Camera2D camera = {0};
-    camera.target = (Vector2){largura_tela / 2.0f, altura_tela / 2.0f};
-    camera.offset = (Vector2){largura_tela / 2.0f, altura_tela / 2.0f};
-    camera.rotation = 0.0f;
-    camera.zoom = 1.0f;
-    SetTargetFPS(60);
-    Texture2D backtext2 = LoadTexture("assets/mapajogoplat.png");
-    const int largura_background = backtext2.width;
-    const int altura_background = backtext2.height;
-    fase fase1;
-    fase1.plataformas[0].x = 0;
-    fase1.plataformas[0].y = 14 + 21 * 32;
-    fase1.plataformas[0].largura = 9 * 32;
-    fase1.plataformas[0].altura = 32;
+    backtext2 = LoadTexture("assets/nairomapabig.png");
 
-    fase1.plataformas[1].x = 9 * 32;
-    fase1.plataformas[1].y = 14 + 18 * 32;
-    fase1.plataformas[1].largura = 9 * 32;
-    fase1.plataformas[1].altura = 32;
+    largura_background = backtext2.width;
+    altura_background = backtext2.height;
 
-    fase1.plataformas[2].x = 18 * 32;
-    fase1.plataformas[2].y = 14 + 11 * 32;
-    fase1.plataformas[2].largura = 8 * 32;
-    fase1.plataformas[2].altura = 32;
+    fase2.plataformas[0].y = altura_background + 50;
+    fase2.plataformas[0].x = 0;
+    fase2.plataformas[0].width = largura_background;
+    fase2.plataformas[0].height = 10;
 
-    fase1.plataformas[3].x = 27 * 32;
-    fase1.plataformas[3].y = 14 + 7 * 32;
-    fase1.plataformas[3].largura = 14 * 32;
-    fase1.plataformas[3].altura = 32;
+    fase2.plataformas[1].y = 125 + 4;
+    fase2.plataformas[1].x = 0;
+    fase2.plataformas[1].width = 64;
+    fase2.plataformas[1].height = 10;
 
-    fase1.plataformas[4].x = 40 * 32;
-    fase1.plataformas[4].y = 14 + 18 * 32;
-    fase1.plataformas[4].largura = 11 * 32;
-    fase1.plataformas[4].altura = 32;
+    fase2.plataformas[2].y = 640 + 4;
+    fase2.plataformas[2].x = 0;
+    fase2.plataformas[2].width = 352;
+    fase2.plataformas[2].height = 10;
 
-    fase1.plataformas[5].x = 51 * 32;
-    fase1.plataformas[5].y = 14 + 15 * 32;
-    fase1.plataformas[5].largura = 5 * 32;
-    fase1.plataformas[5].altura = 32;
+    fase2.plataformas[3].y = 800 + 4;
+    fase2.plataformas[3].x = 512;
+    fase2.plataformas[3].width = 352;
+    fase2.plataformas[3].height = 10;
 
-    fase1.plataformas[6].x = 56 * 32;
-    fase1.plataformas[6].y = 14 + 12 * 32;
-    fase1.plataformas[6].largura = 5 * 32;
-    fase1.plataformas[6].altura = 32;
+    fase2.plataformas[4].y = 640 + 4;
+    fase2.plataformas[4].x = 1024;
+    fase2.plataformas[4].width = 288;
+    fase2.plataformas[4].height = 10;
 
-    fase1.plataformas[7].x = 51 * 32;
-    fase1.plataformas[7].y = 14 + 9 * 32;
-    fase1.plataformas[7].largura = 5 * 32;
-    fase1.plataformas[7].altura = 32;
+    fase2.plataformas[5].y = 640 + 4;
+    fase2.plataformas[5].x = 1376;
+    fase2.plataformas[5].width = 224;
+    fase2.plataformas[5].height = 10;
 
-    fase1.plataformas[8].x = 56 * 32;
-    fase1.plataformas[8].y = 14 + 5 * 32;
-    fase1.plataformas[8].largura = 19 * 32;
-    fase1.plataformas[8].altura = 32;
+    fase2.plataformas[6].y = 448 + 4;
+    fase2.plataformas[6].x = 1664;
+    fase2.plataformas[6].width = 352;
+    fase2.plataformas[6].height = 10;
 
-    fase1.plataformas[9].x = 74 * 32;
-    fase1.plataformas[9].y = 14 + 9 * 32;
-    fase1.plataformas[9].largura = 6 * 32;
-    fase1.plataformas[9].altura = 32;
+    fase2.plataformas[7].y = 576 + 4;
+    fase2.plataformas[7].x = 1952;
+    fase2.plataformas[7].width = 160;
+    fase2.plataformas[7].height = 10;
 
-    fase1.plataformas[10].x = 68 * 32;
-    fase1.plataformas[10].y = 14 + 13 * 32;
-    fase1.plataformas[10].largura = 7 * 32;
-    fase1.plataformas[10].altura = 32;
+    fase2.plataformas[8].y = 736 + 4;
+    fase2.plataformas[8].x = 2080;
+    fase2.plataformas[8].width = 960;
+    fase2.plataformas[8].height = 10;
 
-    fase1.plataformas[11].x = 74 * 32;
-    fase1.plataformas[11].y = 14 + 17 * 32;
-    fase1.plataformas[11].largura = 6 * 32;
-    fase1.plataformas[11].altura = 32;
+    fase2.plataformas[9].y = 512 + 4;
+    fase2.plataformas[9].x = 3040;
+    fase2.plataformas[9].width = 352;
+    fase2.plataformas[9].height = 10;
 
-    fase1.plataformas[12].x = 66 * 32;
-    fase1.plataformas[12].y = 14 + 21 * 32;
-    fase1.plataformas[12].largura = 14 * 32;
-    fase1.plataformas[12].altura = 32;
+    fase2.plataformas[10].y = 288 + 4;
+    fase2.plataformas[10].x = 2720;
+    fase2.plataformas[10].width = 352;
+    fase2.plataformas[10].height = 10;
 
-    while (!WindowShouldClose())
-    {
-        int plat_atual = bola_na_plat(bola, fase1.plataformas, 2);
-        if (plat_atual != -1)
-        {
-            if (bola.velocidadeY > 0)
-            {
-                bola.y = fase1.plataformas[plat_atual].y - bola.size;
-                bola.velocidadeY = 0;
-                bola.noChao = 1;
-            }
+    fase2.plataformas[11].y = 160 + 4;
+    fase2.plataformas[11].x = 3296;
+    fase2.plataformas[11].width = 640;
+    fase2.plataformas[11].height = 10;
 
-            // Salto quando pressiona a barra de espaço
-            if (IsKeyPressed(KEY_SPACE))
-            {
-                bola.velocidadeY = -17;
-                bola.noChao = 0;
-            }
-        }
-        else
-        {
-            if (bola.velocidadeY <= 15)
-            {
-                bola.velocidadeY += 1; // Gravidade simulada
-            }
-            else
-            {
-                bola.velocidadeY = 15;
-            }
-            bola.noChao = 0;
-        }
+    fase2.plataformas[12].y = 288 + 4;
+    fase2.plataformas[12].x = 3936;
+    fase2.plataformas[12].width = 192;
+    fase2.plataformas[12].height = 10;
 
-        if (IsKeyDown(KEY_A))
-        {
-            bola.x -= 5;
-        }
+    fase2.plataformas[13].y = 544 + 4;
+    fase2.plataformas[13].x = 4096;
+    fase2.plataformas[13].width = 608;
+    fase2.plataformas[13].height = 10;
 
-        if (IsKeyDown(KEY_D))
-        {
-            bola.x += 5;
-        }
+    fase2.plataformas[14].y = 288 + 4;
+    fase2.plataformas[14].x = 4736;
+    fase2.plataformas[14].width = 576;
+    fase2.plataformas[14].height = 10;
 
-        bola.y += bola.velocidadeY;
+    fase2.plataformas[15].y = 832 + 4;
+    fase2.plataformas[15].x = 5344;
+    fase2.plataformas[15].width = 192 + 32;
+    fase2.plataformas[15].height = 10;
 
-        // Ajustar a posição da câmera para seguir a bola mantendo-a totalmente visível
-        camera.target.x = bola.x;
-        camera.target.y = bola.y;
+    fase2.plataformas[16].y = 832 + 4;
+    fase2.plataformas[16].x = 5888;
+    fase2.plataformas[16].width = 192;
+    fase2.plataformas[16].height = 10;
 
-        // Restringir a posição da câmera dentro dos limites do background
-        if (camera.target.x < largura_tela / 2.0f)
-            camera.target.x = largura_tela / 2.0f;
-        if (camera.target.x > largura_background - largura_tela / 2.0f)
-            camera.target.x = largura_background - largura_tela / 2.0f;
-        if (camera.target.y < altura_tela / 2.0f)
-            camera.target.y = altura_tela / 2.0f;
-        if (camera.target.y > altura_background - altura_tela / 2.0f)
-            camera.target.y = altura_background - altura_tela / 2.0f;
+    fase2.plataformas[17].y = 640 + 4;
+    fase2.plataformas[17].x = 6176;
+    fase2.plataformas[17].width = 192;
+    fase2.plataformas[17].height = 10;
 
-        BeginDrawing();
+    fase2.plataformas[18].y = 416 + 4;
+    fase2.plataformas[18].x = 6336;
+    fase2.plataformas[18].width = 544 + 32;
+    fase2.plataformas[18].height = 10;
 
-        BeginMode2D(camera);
+    fase2.plataformas[19].y = 708;
+    fase2.plataformas[19].x = 6912;
+    fase2.plataformas[19].width = 1216 + 32;
+    fase2.plataformas[19].height = 10;
 
-        DrawTexture(backtext2, 0, 0, WHITE);
+    fase2.plataformas[20].y = 896 + 4;
+    fase2.plataformas[20].x = 8160;
+    fase2.plataformas[20].width = 256 + 32;
+    fase2.plataformas[20].height = 10;
 
-        DrawCircle(bola.x, bola.y, bola.size, RED);
+    fase2.plataformas[21].y = 708;
+    fase2.plataformas[21].x = 8448;
+    fase2.plataformas[21].width = 288;
+    fase2.plataformas[21].height = 10;
 
-        EndMode2D();
+    fase2.plataformas[22].y = 512 + 4;
+    fase2.plataformas[22].x = 8768;
+    fase2.plataformas[22].width = 288;
+    fase2.plataformas[22].height = 10;
 
-        EndDrawing();
-    }
-    CloseWindow();
+    fase2.plataformas[23].y = 512 + 4;
+    fase2.plataformas[23].x = 9280;
+    fase2.plataformas[23].width = 320;
+    fase2.plataformas[23].height = 10;
+
+    fase2.plataformas[24].y = 288 + 4;
+    fase2.plataformas[24].x = 9632;
+    fase2.plataformas[24].width = 192;
+    fase2.plataformas[24].height = 10;
+
+    fase2.plataformas[25].y = 128 + 12;
+    fase2.plataformas[25].x = 9984;
+    fase2.plataformas[25].width = 224;
+    fase2.plataformas[25].height = 10;
 }
+
+void draw_fase2()
+{
+    DrawTexture(backtext2, 0, 0, WHITE);
+    for (int i = 0; i < 26; i++)
+    {
+        DrawRectangle(fase2.plataformas[i].x, fase2.plataformas[i].y, fase2.plataformas[i].width, fase2.plataformas[i].height, BLACK);
+    }
+}
+
+#endif

@@ -2,29 +2,26 @@
 #include "structs.h"
 #include "colisao.h"
 
-int bola_na_plat(Bola bola, Platform plataforma[], int fase)
+#ifndef COLISAO_C
+#define COLISAO_C
+
+Rectangle collision(Rectangle player, fase fase, int num_fase)
 {
     int count;
-    if (fase == 1)
+    if (num_fase == 1)
     {
         count = 14;
     }
     else
-        count = 17;
+        count = 26;
 
     for (int i = 0; i < count; i++)
     {
-        Platform plataforms = plataforma[i];
-        Rectangle platform_rec = {.x = plataforms.x, .y = plataforms.y, .height = plataforms.altura, .width = plataforms.largura};
-        Rectangle pos_bola = {
-            .x = bola.x - bola.size + 5,
-            .y = bola.y + bola.size / 2,
-            .width = bola.size * 2 - 10,
-            .height = bola.size / 2 + 1};
-        if (CheckCollisionRecs(pos_bola, platform_rec))
+        if (CheckCollisionRecs(player, fase.plataformas[i]))
         {
-            return i;
+            return (fase.plataformas[i]);
         }
     }
-    return -1;
+    return ((Rectangle){0, 0, 0, 0});
 }
+#endif

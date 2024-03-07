@@ -1,3 +1,3 @@
-//TAM da tela
-#define largura_tela 900
-#define altura_tela 668
+// TAM da tela
+#define largura_tela 1000
+#define altura_tela 980
