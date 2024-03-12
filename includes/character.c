@@ -1,3 +1,6 @@
+#ifndef CHARACTER_C
+#define CHARACTER_C
+
 #include <stdio.h>
 #include <math.h>
 #include "raylib.h"
@@ -8,8 +11,12 @@
 #include "fase2.c"
 #include "colisao.h"
 #include "colisao.c"
+#include "enemy1.h"
+#include "enemy1.c"
 #include "enemy2.h"
-#include "menugameover.h"
+#include "enemy2.cpp"
+#include "transition.h"
+#include "transition.c"
 
 // Initialization
 //--------------------------------------------------------------------------------------
@@ -22,6 +29,7 @@ bool jump = 0;
 bool moving = 0;
 int jumptimer = 0;
 int cont = 0;
+int button = 0;
 int maxframes_run = 8;
 int maxframes_idle = 12;
 float timer = 0.0f;
@@ -57,7 +65,8 @@ void character_init()
     frameWidth_landing = player_landing_tex.width;
     frameHeight_landing = player_landing_tex.height;
 
-    posicao = (Vector2){0, 320 - frameHeight_idle};
+    posicao = (Vector2){0, 686 - frameHeight_idle};
+    ;
     player_run = (Rectangle){0, 0, frameWidth_run, frameHeight_run};
     player_idle = (Rectangle){0, 0, frameWidth_idle, frameHeight_idle};
     player_jump = (Rectangle){0, 0, frameWidth_jump, frameHeight_jump};
@@ -67,14 +76,35 @@ void character_init()
 
 // camera settings
 //--------------------------------------------------------------------------------------
-void camera_settings(int *screenWidth)
+void camera_settings(int *screenWidth, int *screenHeight, int transition)
 {
-    camera.target = (Vector2){posicao.x + abs(player_idle.width) / 2 - *screenWidth / 2, 0};
-    if (posicao.x < *screenWidth / 2)
-        camera.target = (Vector2){abs(player_idle.width / 2), 0};
-    if (posicao.x > largura_background - *screenWidth / 2 - abs(player_idle.width / 2))
-        camera.target = (Vector2){largura_background - *screenWidth, 0};
-    camera.offset = (Vector2){0, 0};
+    camera.target = (Vector2){posicao.x + abs(player_idle.width) / 2, posicao.y + abs(playerhitbox.height) / 2};
+
+    if (posicao.x + abs(player_idle.width / 2) < *screenWidth / 2)
+        camera.target.x = *screenWidth / 2;
+
+    if (posicao.y + abs(playerhitbox.height / 2) < *screenHeight / 2)
+        camera.target.y = *screenHeight / 2;
+
+    if (transition == 1)
+    {
+        if (posicao.x + abs(player_idle.width / 2) > largura_background1 - *screenWidth / 2)
+            camera.target.x = largura_background1 - *screenWidth / 2;
+
+        if (posicao.y + abs(playerhitbox.height / 2) > altura_background1 - *screenHeight / 2)
+            camera.target.y = altura_background1 - *screenHeight / 2;
+    }
+
+    if (transition == 2)
+    {
+        if (posicao.x + abs(player_idle.width / 2) > largura_background2 - *screenWidth / 2)
+            camera.target.x = largura_background2 - *screenWidth / 2;
+
+        if (posicao.y + abs(playerhitbox.height / 2) > altura_background2 - *screenHeight / 2)
+            camera.target.y = altura_background2 - *screenHeight / 2;
+    }
+
+    camera.offset = (Vector2){*screenWidth / 2, *screenHeight / 2};
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 }
@@ -221,7 +251,10 @@ void character_movement()
     }
 
     // Platform collision
-    platform = collision(playerhitbox, fase2, 2);
+    if (transition(&playerhitbox, &posicao, &jumptimer) == 1)
+        platform = collision(playerhitbox, fase1, 1);
+    if (transition(&playerhitbox, &posicao, &jumptimer) == 2)
+        platform = collision(playerhitbox, fase2, 2);
     if (platform.y != -1 && (posicao.y + playerhitbox.height - 10) < platform.y && (jump == 0 || (jump == 1 && jumptimer >= 40)) && (posicao.x + playerhitbox.width / 2 >= platform.x && posicao.x + playerhitbox.width / 2 <= platform.x + platform.width))
     {
         platformcollision = 1;
@@ -241,8 +274,6 @@ void character_movement()
 
     else
         platformcollision = 0;
-    if (platformcollision == 1)
-        printf("posicao %f\n", posicao.x);
 }
 
 // character drawing
@@ -263,25 +294,58 @@ void draw_character()
         DrawTextureRec(player_landing_tex, player_landing, posicao, WHITE);
 }
 
-void colisaoinimigos()
+int colisaoinimigosfase1()
 {
-    platform = collision(playerhitbox, fase2, 2);
-
-    Rectangle inimigo;
-    inimigo = enemy2_movement(playerhitbox.x, playerhitbox.y);
-
-    if (CheckCollisionRecs(playerhitbox, inimigo) || platform.y >= altura_tela)
+    int colidiu = 0;
+    platform = collision(playerhitbox, fase1, 1);
+    int inim1 = 0;
+    for (int i = 0; i < 12; i++)
     {
+        if ((CheckCollisionRecs(playerhitbox, enemy2[i].rechitbox) || platform.y >= altura_tela || CheckCollisionRecs(playerhitbox, enemy1[inim1].rechitbox)) && (colidiu == 0))
+        {
+            colidiu = 1;
+        }
+        inim1++;
+        if (inim1 == 7)
+            inim1 = 0;
+    }
+    if (colidiu)
+    {
+
         posicao.x = 0;
-        posicao.y = 0;
+        posicao.y = 14 + (21 * 32) - 150;
         playerhitbox.x = posicao.x;
         playerhitbox.y = posicao.y;
-        unload_charactertex();
-        unload_enemy2_tex();
-        fimdejogo();
+        return 1;
     }
+    else
+        return 0;
 }
-// Unload characrer textures
+
+int colisaoinimigosfase2()
+{
+    int colidiu = 0;
+    platform = collision(playerhitbox, fase2, 2);
+    int inim2 = 7;
+    for (int i = 12; i < 42; i++)
+    {
+        if ((CheckCollisionRecs(playerhitbox, enemy2[i].rechitbox) || platform.y >= altura_tela_fase2 || CheckCollisionRecs(playerhitbox, enemy1[inim2].rechitbox)) && (colidiu == 0))
+        {
+            colidiu = 1;
+        }
+        inim2++;
+        if (inim2 == 21)
+            inim2 = 7;
+    }
+    if (colidiu)
+    {
+
+        return 1;
+    }
+    else
+        return 0;
+}
+// Unload character textures
 //--------------------------------------------------------------------------------------
 void unload_charactertex()
 {
@@ -290,3 +354,5 @@ void unload_charactertex()
     UnloadTexture(player_jump_tex);
     UnloadTexture(player_landing_tex);
 }
+
+#endif

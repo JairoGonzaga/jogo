@@ -9,24 +9,24 @@
 
 Texture2D backtext2;
 
-int largura_background;
-int altura_background;
+int largura_background2;
+int altura_background2;
 fase fase2;
 
 void fase2_init()
 {
 
-    backtext2 = LoadTexture("assets/nairomapabig.png");
+    backtext2 = LoadTexture("assets/maps/fase2defin.png");
 
-    largura_background = backtext2.width;
-    altura_background = backtext2.height;
+    largura_background2 = backtext2.width;
+    altura_background2 = backtext2.height;
 
-    fase2.plataformas[0].y = altura_background + 50;
+    fase2.plataformas[0].y = altura_background2 + 50;
     fase2.plataformas[0].x = 0;
-    fase2.plataformas[0].width = largura_background;
+    fase2.plataformas[0].width = largura_background2;
     fase2.plataformas[0].height = 10;
 
-    fase2.plataformas[1].y = 125 + 4;
+    fase2.plataformas[1].y = 155 + 4;
     fase2.plataformas[1].x = 0;
     fase2.plataformas[1].width = 64;
     fase2.plataformas[1].height = 10;
@@ -91,7 +91,7 @@ void fase2_init()
     fase2.plataformas[13].width = 608;
     fase2.plataformas[13].height = 10;
 
-    fase2.plataformas[14].y = 288 + 4;
+    fase2.plataformas[14].y = 672 + 4;
     fase2.plataformas[14].x = 4736;
     fase2.plataformas[14].width = 576;
     fase2.plataformas[14].height = 10;
@@ -155,10 +155,6 @@ void fase2_init()
 void draw_fase2()
 {
     DrawTexture(backtext2, 0, 0, WHITE);
-    for (int i = 0; i < 26; i++)
-    {
-        DrawRectangle(fase2.plataformas[i].x, fase2.plataformas[i].y, fase2.plataformas[i].width, fase2.plataformas[i].height, BLACK);
-    }
 }
 
 #endif

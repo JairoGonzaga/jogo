@@ -11,8 +11,9 @@ typedef struct
 } enemy2_data;
 
 void enemy2_init();
-Rectangle enemy2_movement(float playerX, float playerY);
-void draw_enemy2();
+void enemy2_movement(float playerX, float playerY);
+void draw_enemy2_map1();
+void draw_enemy2_map2();
 void unload_enemy2_tex();
 
 #endif

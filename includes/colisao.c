@@ -10,7 +10,7 @@ Rectangle collision(Rectangle player, fase fase, int num_fase)
     int count;
     if (num_fase == 1)
     {
-        count = 14;
+        count = 20;
     }
     else
         count = 26;
